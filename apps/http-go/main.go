@@ -8,7 +8,6 @@ import (
 	"net/http"
 	_ "github.com/lib/pq"
 )
-
 var db *sql.DB
 
 type Website struct {
@@ -32,7 +31,6 @@ func createWebsite(w http.ResponseWriter, r *http.Request) {
 	var input struct {
 		URL string `json:"url"`
 	}
-
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil || input.URL == "" {
 		http.Error(w, `{"message":"Missing url"}`,http.StatusLengthRequired)
@@ -51,7 +49,6 @@ func createWebsite(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, `{"message":"Failed to insert website"}`, http.StatusInternalServerError)
 		return
 	}
-
 	json.NewEncoder(w).Encode(map[string]string{"id": id})
 }
 
@@ -95,11 +92,9 @@ func main() {
         time_added TIMESTAMP NOT NULL DEFAULT NOW()
     )
 `)
-	log.Printf("DB created: %v", err)
 
 	http.HandleFunc("/", hello)
 	http.HandleFunc("/website", createWebsite)
 	http.HandleFunc("/status/", getStatus)
-
 	http.ListenAndServe(":3000", nil)
 }

@@ -8,4 +8,31 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.post("website",async(req,res)=>{
+    if(!req.body.url){
+        res.status(411).json({"message":"Missing url"});
+        return;
+    }
+    const website = await prisma.website.create({
+        data:{
+            url:req.body.url,
+            timeAdded:new Date()
+        }
+    })
+    res.json({
+        id:website?.id
+    });
+})
+
+app.get("/status/:websiteId", async(req, res) => {
+
+    const websiteId = req.params.websiteId;
+
+    const status = await prisma.websiteTick.findFirst({
+        where:{
+            website_id:websiteId
+        }
+    })
+})
+
 app.listen(3000);

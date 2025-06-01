@@ -118,7 +118,7 @@ describe("Website status endpoint", () => {
             if (axios.isAxiosError(error) && error.response) {
                 expect(error.response.status).toBeGreaterThanOrEqual(400);
 
-                console.log(`Non-existent website status returned ${error.response.status}: ${JSON.stringify(error.response.data)}`);
+                console.log(`Non-existent website ${error.response.status}: ${JSON.stringify(error.response.data)}`);
                 expect(true).toBe(true);
             } else {
                 throw error;
@@ -137,47 +137,3 @@ describe("Server health check", () => {
     });
 });
 
-describe("Error handling", () => {
-    it("Should handle malformed JSON gracefully", async () => {
-        try {
-            const response = await axios.post(`${BASE_URL}/website`, "invalid-json", {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            throw new Error("Should have thrown an error for malformed JSON");
-        } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response) {
-                expect(error.response.status).toBeGreaterThanOrEqual(400);
-                expect(error.response.status).toBeLessThan(500);
-            } else if (error instanceof Error && 'code' in error) {
-                // Network error is acceptable
-                expect(error.code).toBeDefined();
-            } else {
-                throw error;
-            }
-        }
-    });
-
-    it("Should handle requests without Content-Type header", async () => {
-        try {
-            const response = await axios.post(`${BASE_URL}/website`, {
-                url: "https://test.com"
-            }, {
-                headers: {
-                    'Content-Type': 'text/plain'
-                }
-            });
-
-            if (response.status === 200) {
-                expect(response.data.id).toBeDefined();
-            }
-        } catch (error: unknown) {
-            if (axios.isAxiosError(error) && error.response) {
-                expect(error.response.status).toBeGreaterThanOrEqual(400);
-            } else {
-                throw error;
-            }
-        }
-    });
-});

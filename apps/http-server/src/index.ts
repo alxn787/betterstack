@@ -8,7 +8,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.post("website",async(req,res)=>{
+app.post("createwebsite",async(req,res)=>{
     if(!req.body.url){
         res.status(411).json({"message":"Missing url"});
         return;
@@ -33,6 +33,13 @@ app.get("/status/:websiteId", async(req, res) => {
             website_id:websiteId
         }
     })
+})
+
+app.post("showwebsites", async(req,res)=>{
+    const { userId }  = req.body;
+    const websites = await prisma.website.findMany();
+
+    res.json(websites);
 })
 
 app.listen(3000);

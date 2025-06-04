@@ -35,11 +35,11 @@ app.get("/status/:websiteId", async(req, res) => {
     })
 })
 
-app.post("showwebsites", async(req,res)=>{
-    const { userId }  = req.body;
-    const websites = await prisma.website.findMany();
+// app.post("showwebsites", async(req,res)=>{
+//     const { userId }  = req.body;
+//     const websites = await prisma.website.findMany();
 
-    res.json(websites);
-})
+//     res.json(websites);
+// })
 
 app.listen(3000);
